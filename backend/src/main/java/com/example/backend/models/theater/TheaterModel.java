@@ -3,12 +3,15 @@ package com.example.backend.models.theater;
 import java.util.Collection;
 import java.util.UUID;
 
+import com.example.backend.models.cinema.CinemaModel;
 import com.example.backend.models.seats.SeatModel;
 import com.example.backend.models.showtime.ShowtimeModel;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,4 +38,8 @@ public class TheaterModel {
     //list of seats
     @OneToMany(mappedBy = "theaterSeat")
     public Collection<SeatModel> seats;
+
+    @ManyToOne
+    @JoinColumn(name="cinema_id")
+    public CinemaModel cinema;
 }

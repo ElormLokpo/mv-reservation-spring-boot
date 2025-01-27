@@ -9,7 +9,7 @@ import com.example.backend.models.cinema.CinemaModel;
 
 @Mapper
 public interface CinemaMapper {
-    CinemaMapper INSTANCE = Mappers.getMapper(CinemaMapper.class);
+    public CinemaMapper INSTANCE = Mappers.getMapper(CinemaMapper.class);
 
     CinemaModel createCinemaDtotoModel(CreateCinemaDto cinemaDto);
     GetCinemaDto cinemaModelToDto(CinemaModel cinema);

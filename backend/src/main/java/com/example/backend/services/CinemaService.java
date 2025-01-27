@@ -5,8 +5,13 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import com.example.backend.daos.CinemaDao;
+import com.example.backend.dtos.ResponseDto;
 import com.example.backend.dtos.cinema.CreateCinemaDto;
 import com.example.backend.dtos.cinema.GetCinemaDto;
 import com.example.backend.mappers.CinemaMapper;
@@ -23,10 +28,30 @@ public class CinemaService implements CinemaDao {
     }
 
     @Override
-    public Collection<GetCinemaDto> getAllCinema() {
-        Collection<CinemaModel> allCinema = cinemaRepository.findAll();
-        return allCinema.stream().map(cinema -> CinemaMapper.INSTANCE.cinemaModelToDto(cinema))
+    public ResponseDto getAllCinema(int pageNo, int pageSize, String sortBy, String sortDir) {
+
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+
+        Page<CinemaModel> allCinema = cinemaRepository.findAll(pageable);
+
+        Collection<CinemaModel> allCinemaContent = allCinema.getContent();
+        Collection<GetCinemaDto> cinemaDtoCollection = allCinemaContent.stream()
+                .map(cinema -> CinemaMapper.INSTANCE.cinemaModelToDto(cinema))
                 .collect(Collectors.toList());
+
+        ResponseDto responseDto = ResponseDto.builder()
+                .pageSize(allCinema.getSize())
+                .pageNumber(allCinema.getNumber() + 1)
+                .totalElements(allCinema.getTotalElements())
+                .totalPages(allCinema.getTotalPages())
+                .isLastPage(allCinema.isLast())
+                .data(cinemaDtoCollection)
+                .build();
+
+        return responseDto;
     }
 
     @Override
@@ -35,21 +60,24 @@ public class CinemaService implements CinemaDao {
     }
 
     @Override
-    public Boolean createCinema(CreateCinemaDto cinemaDto) {
-        cinemaRepository.save(CinemaMapper.INSTANCE.createCinemaDtotoModel(cinemaDto));
-        return true;
+    public CinemaModel createCinema(CreateCinemaDto cinemaDto) {
+        CinemaModel cinema = CinemaMapper.INSTANCE.createCinemaDtotoModel(cinemaDto);
+        cinemaRepository.save(cinema);
+
+        return cinema;
     }
 
     @Override
-    public Boolean deleteCinema(UUID id) {
+    public CinemaModel deleteCinema(UUID id) {
         Boolean cinemaExists = cinemaRepository.existsById(id);
+        CinemaModel cinema = cinemaRepository.findById(id).orElse(null);
 
-        if(cinemaExists == true){
+        if (cinemaExists == true) {
             cinemaRepository.deleteById(id);
-            return true;
+            return cinema;
         }
 
-        return false;
+        return cinema;
     }
 
 }

@@ -1,15 +1,14 @@
 package com.example.backend.daos;
 
-import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.example.backend.dtos.ResponseDto;
 import com.example.backend.dtos.movie.CreateMovieDto;
-import com.example.backend.dtos.movie.GetMoviesDto;
 import com.example.backend.models.movie.MovieModel;
 
 public interface MovieDao {
-    public Collection<GetMoviesDto> getAllMovies();
+    public ResponseDto getAllMovies(int pageNo, int pageSize, String sortBy, String sortDir);
 
     public Optional<MovieModel> getMovie(UUID id);
 

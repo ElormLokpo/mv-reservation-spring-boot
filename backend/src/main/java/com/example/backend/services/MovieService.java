@@ -5,9 +5,14 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.example.backend.daos.MovieDao;
+import com.example.backend.dtos.ResponseDto;
 import com.example.backend.dtos.movie.CreateMovieDto;
 import com.example.backend.dtos.movie.GetMoviesDto;
 import com.example.backend.mappers.MovieMapper;
@@ -24,12 +29,28 @@ public class MovieService implements MovieDao {
     }
 
     @Override
-    public Collection<GetMoviesDto> getAllMovies() {
-        Collection<MovieModel> allMovies = movieRepository.findAll();
-        Collection<GetMoviesDto> allMoviesDto = allMovies.stream().map(movie -> MovieMapper.INSTANCE.movieToDto(movie))
+    public ResponseDto getAllMovies(int pageNo, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+
+        Page<MovieModel> moviePage = movieRepository.findAll(pageable);
+
+        Collection<MovieModel> allMoviesContent = moviePage.getContent();
+        Collection<GetMoviesDto> allMoviesDto = allMoviesContent.stream().map(movie -> MovieMapper.INSTANCE.movieToDto(movie))
                 .collect(Collectors.toList());
 
-        return allMoviesDto;
+        ResponseDto response = ResponseDto.builder()
+        .data(allMoviesDto)
+        .pageSize(moviePage.getSize())
+        .pageNumber(moviePage.getNumber())
+        .totalElements(moviePage.getTotalElements())
+        .totalPages(moviePage.getTotalPages())
+        .isLastPage(moviePage.isLast())
+        .build();
+
+        return response;
     }
 
     @Override

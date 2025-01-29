@@ -11,8 +11,8 @@ import com.example.backend.models.showtime.ShowtimeModel;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,6 +28,8 @@ public class MovieModel {
     @GeneratedValue
     @Id
     public UUID id; 
+
+    @NotEmpty(message="Movie title is required")
     public String title; 
     public String description;
     public String genre;

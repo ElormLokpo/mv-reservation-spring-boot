@@ -7,8 +7,10 @@ import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.example.backend.dtos.ResponseDto;
 import com.example.backend.dtos.movie.CreateMovieDto;
 import com.example.backend.dtos.movie.GetMoviesDto;
+import com.example.backend.mappers.ResponseMapper;
 import com.example.backend.models.movie.MovieModel;
 import com.example.backend.services.MovieService;
 import com.example.backend.utils.ResponseGen;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,13 +37,18 @@ public class MovieController {
     }
 
     @GetMapping
-    public ResponseEntity<ResponseGen> getAllMovies() {
-        Collection<GetMoviesDto> movies = movieService.getAllMovies();
-        ResponseGen response = ResponseGen.builder()
-                .success(true)
-                .message("Movie query successful")
-                .data(movies)
-                .build();
+    public ResponseEntity<ResponseGen> getAllMovies(
+        @RequestParam(value="pageNo", defaultValue = "0", required = false) int pageNo,
+        @RequestParam(value="pageSize", defaultValue = "10", required = false) int pageSize,
+        @RequestParam(value="sortBy", defaultValue = "title", required = false) String sortBy,
+        @RequestParam(value="sortDir", defaultValue = "asc", required = false) String sortDir
+
+    ) {
+        ResponseDto moviesResponseDto = movieService.getAllMovies(pageNo, pageSize, sortBy, sortDir);
+        ResponseGen response = ResponseMapper.INSTANCE.responseDtotoResMapper(moviesResponseDto);
+
+        response.setSuccess(true);
+        response.setMessage("All movies query successful");
 
         return ResponseEntity.ok(response);
     }

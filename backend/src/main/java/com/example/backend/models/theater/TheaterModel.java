@@ -2,7 +2,6 @@ package com.example.backend.models.theater;
 
 import java.util.Collection;
 import java.util.UUID;
-
 import com.example.backend.models.cinema.CinemaModel;
 import com.example.backend.models.seats.SeatModel;
 import com.example.backend.models.showtime.ShowtimeModel;
@@ -31,6 +30,7 @@ public class TheaterModel {
     public String name; 
     public String location; 
     public Integer seatingCapacity; 
+    
     //list of showtimes
     @OneToMany(mappedBy="theater")
     public Collection<ShowtimeModel> showTimes;

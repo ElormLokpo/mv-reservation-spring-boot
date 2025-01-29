@@ -2,10 +2,10 @@ package com.example.backend.models.cinema;
 
 import java.util.Collection;
 import java.util.UUID;
-
 import com.example.backend.models.theater.TheaterModel;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -25,11 +25,11 @@ public class CinemaModel {
     @Id
     public UUID id;
 
-    @NotEmpty(message="Name of cinema is required")
+    @NotEmpty(message = "Name of cinema is required")
     public String name;
     public String location;
 
-    @OneToMany(mappedBy="cinema")
+    @OneToMany(mappedBy = "cinema", fetch = FetchType.LAZY, orphanRemoval = true)
     public Collection<TheaterModel> theaters;
 
 }

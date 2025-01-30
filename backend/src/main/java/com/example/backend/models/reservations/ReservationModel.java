@@ -2,6 +2,7 @@ package com.example.backend.models.reservations;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -40,6 +41,7 @@ public class ReservationModel {
     public ShowtimeModel showtime;
 
    
+    @Builder.Default
     @OneToMany(mappedBy="reservation")
-    public Collection<SeatModel> seats;
+    public Collection<SeatModel> seats = new ArrayList<>();
 }

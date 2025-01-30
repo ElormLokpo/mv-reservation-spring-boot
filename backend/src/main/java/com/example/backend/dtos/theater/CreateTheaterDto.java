@@ -1,5 +1,7 @@
 package com.example.backend.dtos.theater;
 
+import java.util.UUID;
+
 import com.example.backend.models.cinema.CinemaModel;
 
 import lombok.AllArgsConstructor;
@@ -16,5 +18,5 @@ public class CreateTheaterDto {
     public String location;
     public Integer seatingCapacity;
 
-    public CinemaModel cinema;
+    public UUID cinema;
 }

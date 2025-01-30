@@ -1,5 +1,6 @@
 package com.example.backend.models.cinema;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 import com.example.backend.models.theater.TheaterModel;
@@ -29,7 +30,8 @@ public class CinemaModel {
     public String name;
     public String location;
 
+    @Builder.Default
     @OneToMany(mappedBy = "cinema", fetch = FetchType.LAZY, orphanRemoval = true)
-    public Collection<TheaterModel> theaters;
+    public Collection<TheaterModel> theaters = new ArrayList<>();
 
 }

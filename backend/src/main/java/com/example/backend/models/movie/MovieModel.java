@@ -1,6 +1,7 @@
 package com.example.backend.models.movie;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -38,8 +39,9 @@ public class MovieModel {
     public Integer duration;
     public String image;
     
+    @Builder.Default
     @OneToMany(mappedBy="movie")
-    public Collection<ShowtimeModel> showtimes;
+    public Collection<ShowtimeModel> showtimes = new ArrayList<>();
 
     
 }

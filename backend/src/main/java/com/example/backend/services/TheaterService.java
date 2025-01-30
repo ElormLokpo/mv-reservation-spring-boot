@@ -16,16 +16,21 @@ import com.example.backend.dtos.ResponseDto;
 import com.example.backend.dtos.theater.CreateTheaterDto;
 import com.example.backend.dtos.theater.GetTheaterDto;
 import com.example.backend.mappers.TheaterMapper;
+import com.example.backend.models.cinema.CinemaModel;
 import com.example.backend.models.theater.TheaterModel;
+import com.example.backend.repositories.CinemaRepository;
 import com.example.backend.repositories.TheaterRepository;
 
 @Service
 public class TheaterService implements TheaterDao {
 
     TheaterRepository theaterReqRepository;
+    CinemaRepository cinemaRepository;
 
-    public TheaterService(TheaterRepository _theaterRepository) {
+    public TheaterService(TheaterRepository _theaterRepository, CinemaRepository _cinemaRepository) {
+        
         this.theaterReqRepository = _theaterRepository;
+        this.cinemaRepository = _cinemaRepository;
     }
 
     @Override
@@ -60,8 +65,15 @@ public class TheaterService implements TheaterDao {
 
     @Override
     public TheaterModel createTheater(CreateTheaterDto theaterDto) {
-        return theaterReqRepository.save(
-                TheaterMapper.INSTANCE.theaterDtoToModel(theaterDto));
+        CinemaModel cinema = cinemaRepository.findById(theaterDto.cinema).orElse(null);
+
+        if(cinema == null){
+            return null;
+        }
+
+        TheaterModel theaterModel = TheaterMapper.INSTANCE.theaterDtoToModel(theaterDto);
+        theaterModel.setCinema(cinema);
+        return theaterReqRepository.save(theaterModel);
     }
 
     @Override

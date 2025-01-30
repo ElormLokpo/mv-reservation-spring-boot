@@ -38,17 +38,18 @@ public class MovieService implements MovieDao {
         Page<MovieModel> moviePage = movieRepository.findAll(pageable);
 
         Collection<MovieModel> allMoviesContent = moviePage.getContent();
-        Collection<GetMoviesDto> allMoviesDto = allMoviesContent.stream().map(movie -> MovieMapper.INSTANCE.movieToDto(movie))
+        Collection<GetMoviesDto> allMoviesDto = allMoviesContent.stream()
+                .map(movie -> MovieMapper.INSTANCE.movieToDto(movie))
                 .collect(Collectors.toList());
 
         ResponseDto response = ResponseDto.builder()
-        .data(allMoviesDto)
-        .pageSize(moviePage.getSize())
-        .pageNumber(moviePage.getNumber())
-        .totalElements(moviePage.getTotalElements())
-        .totalPages(moviePage.getTotalPages())
-        .isLastPage(moviePage.isLast())
-        .build();
+                .data(allMoviesDto)
+                .pageSize(moviePage.getSize())
+                .pageNumber(moviePage.getNumber())
+                .totalElements(moviePage.getTotalElements())
+                .totalPages(moviePage.getTotalPages())
+                .isLastPage(moviePage.isLast())
+                .build();
 
         return response;
     }
@@ -59,13 +60,11 @@ public class MovieService implements MovieDao {
     }
 
     @Override
-    public Boolean createMovie(CreateMovieDto movieDto) {
-        MovieModel movie = MovieMapper.INSTANCE.movieDtoToModel(movieDto);
-        movieRepository.save(movie);
-
-        return true;
+    public MovieModel createMovie(CreateMovieDto movieDto) {
+        return movieRepository.save(MovieMapper.INSTANCE.movieDtoToModel(movieDto));
     }
 
+    // work on update logic better
     @Override
     public Boolean updateMovie(UUID id, CreateMovieDto movieDto) {
         MovieModel foundMovie = movieRepository.findById(id).orElse(null);
@@ -89,14 +88,15 @@ public class MovieService implements MovieDao {
     }
 
     @Override
-    public Boolean deleteMovie(UUID id) {
+    public MovieModel deleteMovie(UUID id) {
         Boolean movieFound = movieRepository.existsById(id);
-        if (movieFound == true) {
+        MovieModel movie = movieRepository.findById(id).orElse(null);
+
+        if (movieFound) {
             movieRepository.deleteById(id);
-            return true;
         }
 
-        return false;
+        return movie;
     }
 
 }

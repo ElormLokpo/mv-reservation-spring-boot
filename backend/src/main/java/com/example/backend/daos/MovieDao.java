@@ -12,9 +12,9 @@ public interface MovieDao {
 
     public Optional<MovieModel> getMovie(UUID id);
 
-    public Boolean createMovie(CreateMovieDto movieDto);
+    public MovieModel createMovie(CreateMovieDto movieDto);
 
     public Boolean updateMovie(UUID id, CreateMovieDto movieDto);
 
-    public Boolean deleteMovie(UUID id);
+    public MovieModel deleteMovie(UUID id);
 }

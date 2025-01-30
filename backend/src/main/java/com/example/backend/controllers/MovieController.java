@@ -77,17 +77,18 @@ public class MovieController {
 
     @PostMapping
     public ResponseEntity<ResponseGen> createMovie(@RequestBody CreateMovieDto moviedto){
-        Boolean movieCreated = movieService.createMovie(moviedto);
+        MovieModel movieCreated = movieService.createMovie(moviedto);
 
         ResponseGen response = ResponseGen.builder()
         .success(true)
         .message("Movie creation successul")
-        .data(null)
+        .data(movieCreated)
         .build();
 
         return ResponseEntity.ok(response);
     }
 
+    //Work on update logic
     @PatchMapping(path="{id}")
     public ResponseEntity<ResponseGen> updateMovie(@PathVariable UUID id, @RequestBody CreateMovieDto movieDto){
         Boolean movieUpdated = movieService.updateMovie(id, movieDto);
@@ -114,12 +115,12 @@ public class MovieController {
 
     @DeleteMapping(path="{id}")
     public ResponseEntity<ResponseGen> deleteMovie(@PathVariable UUID id){
-        Boolean deletedMovie = movieService.deleteMovie(id);
+        MovieModel deletedMovie = movieService.deleteMovie(id);
 
         ResponseGen response = ResponseGen.builder()
         .success(true)
         .message("Movie deleted successully")
-        .data(null)
+        .data(deletedMovie)
         .build();
 
         return ResponseEntity.ok(response);

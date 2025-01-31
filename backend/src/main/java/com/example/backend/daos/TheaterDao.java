@@ -10,9 +10,11 @@ import com.example.backend.models.theater.TheaterModel;
 public interface TheaterDao {
     public ResponseDto getAllTheaters(int pageNo, int pageSize, String sortBy, String sortDir);
 
+    public ResponseDto getAllTheatersByCinema(UUID cinemaId, int pageNo, int pageSize, String sortBy, String sortDir);
+
     public Optional<TheaterModel> getTheater(UUID id);
 
-    public TheaterModel createTheater(CreateTheaterDto theaterDto);
+    public TheaterModel createTheater(UUID cinemaId, CreateTheaterDto theaterDto);
 
     public TheaterModel deleteTheater(UUID id);
 }

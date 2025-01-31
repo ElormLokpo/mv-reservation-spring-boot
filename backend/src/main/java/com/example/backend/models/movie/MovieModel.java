@@ -39,9 +39,6 @@ public class MovieModel {
     public Integer duration;
     public String image;
     
-    @Builder.Default
-    @OneToMany(mappedBy="movie")
-    public Collection<ShowtimeModel> showtimes = new ArrayList<>();
-
+ //Showtime rel
     
 }

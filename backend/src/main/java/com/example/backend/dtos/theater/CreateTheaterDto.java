@@ -17,6 +17,4 @@ public class CreateTheaterDto {
     public String name;
     public String location;
     public Integer seatingCapacity;
-
-    public UUID cinema;
 }

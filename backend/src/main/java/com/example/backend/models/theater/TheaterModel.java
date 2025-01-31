@@ -2,12 +2,16 @@ package com.example.backend.models.theater;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import com.example.backend.models.cinema.CinemaModel;
 import com.example.backend.models.seats.SeatModel;
 import com.example.backend.models.showtime.ShowtimeModel;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -30,22 +34,17 @@ public class TheaterModel {
     @Id
     public UUID id;
 
-    @NotEmpty(message = "Theater name required")
     public String name;
     public String location;
 
-    @NotEmpty(message = "Theater seating capacity required")
     public Integer seatingCapacity;
 
     // list of showtimes
-    @Builder.Default
-    @OneToMany(mappedBy = "theater")
-    public Collection<ShowtimeModel> showTimes = new ArrayList<>();
 
-    // list of seats
+    @JsonIgnore
     @Builder.Default
-    @OneToMany(mappedBy = "theaterSeat")
-    public Collection<SeatModel> seats = new ArrayList<>();
+    @OneToMany(mappedBy = "theater", fetch = FetchType.LAZY, orphanRemoval = true)
+    public Set<SeatModel> seats = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "cinema_id")

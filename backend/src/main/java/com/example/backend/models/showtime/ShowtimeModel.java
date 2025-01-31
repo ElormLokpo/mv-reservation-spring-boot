@@ -31,12 +31,11 @@ public class ShowtimeModel {
     public Time time;
     public int availableSeats;
    
-    @ManyToOne
-    @JoinColumn(name="movie_id")
-    public MovieModel movie;
+    //Movie rel
    
-    @ManyToOne 
-    @JoinColumn(name="theater_id")
-    public TheaterModel theater;
+
+
+   //Theater rel
+  
 
 }

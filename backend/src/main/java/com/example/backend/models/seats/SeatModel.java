@@ -20,24 +20,24 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name="seats")
+@Entity(name = "seats")
 @Builder
 public class SeatModel {
     @GeneratedValue
-    @Id 
+    @Id
     public UUID id;
-    public Integer row;
-    public Integer column;
-    
-    @Enumerated(EnumType.STRING)  
-    public SeatStatusEnum status;
+    public Integer srow;
+    public Integer scolumn;
 
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    public SeatStatusEnum status = SeatStatusEnum.Available;
+
+    // Reservation rel
+
+    // Theater rel
     @ManyToOne
-    @JoinColumn(name="reservation_id")
-    public ReservationModel reservation;    
-
-    @ManyToOne 
     @JoinColumn(name="theater_id")
-    public TheaterModel theaterSeat;
+    public TheaterModel theater;
 
 }

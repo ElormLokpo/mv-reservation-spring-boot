@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 
 import com.example.backend.daos.TheaterDao;
 import com.example.backend.dtos.ResponseDto;
+import com.example.backend.dtos.cinema.GetCinemaDto;
 import com.example.backend.dtos.theater.CreateTheaterDto;
 import com.example.backend.dtos.theater.GetTheaterDto;
+import com.example.backend.mappers.CinemaMapper;
 import com.example.backend.mappers.TheaterMapper;
 import com.example.backend.models.cinema.CinemaModel;
 import com.example.backend.models.theater.TheaterModel;
@@ -25,12 +27,38 @@ import com.example.backend.repositories.TheaterRepository;
 public class TheaterService implements TheaterDao {
 
     TheaterRepository theaterReqRepository;
-    CinemaRepository cinemaRepository;
+    CinemaService cinemaService;
 
-    public TheaterService(TheaterRepository _theaterRepository, CinemaRepository _cinemaRepository) {
-        
+    public TheaterService(TheaterRepository _theaterRepository, CinemaService _cinemaService) {
+
         this.theaterReqRepository = _theaterRepository;
-        this.cinemaRepository = _cinemaRepository;
+        this.cinemaService = _cinemaService;
+    }
+
+    @Override
+    public ResponseDto getAllTheatersByCinema(UUID cinemaId, int pageNo, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<TheaterModel> theaterQuery = theaterReqRepository.findTheatersByCinema(cinemaId, pageable);
+
+        Collection<TheaterModel> theaterList = theaterQuery.getContent();
+
+        Collection<GetTheaterDto> theaterListDto = theaterList.stream()
+                .map(theater -> TheaterMapper.INSTANCE.theaterToDto(theater)).collect(Collectors.toList());
+
+        ResponseDto response = ResponseDto.builder()
+                .data(theaterListDto)
+                .pageSize(theaterQuery.getSize())
+                .pageNumber(theaterQuery.getNumber())
+                .totalElements(theaterQuery.getTotalElements())
+                .totalPages(theaterQuery.getTotalPages())
+                .isLastPage(theaterQuery.isLast())
+                .build();
+
+        return response;
+
     }
 
     @Override
@@ -64,16 +92,25 @@ public class TheaterService implements TheaterDao {
     }
 
     @Override
-    public TheaterModel createTheater(CreateTheaterDto theaterDto) {
-        CinemaModel cinema = cinemaRepository.findById(theaterDto.cinema).orElse(null);
+    public TheaterModel createTheater(UUID cinemaId, CreateTheaterDto theaterDto) {
 
-        if(cinema == null){
-            return null;
+        CinemaModel cinemaFound = cinemaService.getCinema(cinemaId).orElse(null);
+
+        if (cinemaFound != null) {
+            TheaterModel newTheater = TheaterModel.builder()
+                    .name(theaterDto.getName())
+                    .location(theaterDto.getLocation())
+                    .seatingCapacity(theaterDto.getSeatingCapacity())
+                    .build();
+
+            newTheater.setCinema(cinemaFound);
+
+            theaterReqRepository.save(newTheater);
+
+            return newTheater;
         }
 
-        TheaterModel theaterModel = TheaterMapper.INSTANCE.theaterDtoToModel(theaterDto);
-        theaterModel.setCinema(cinema);
-        return theaterReqRepository.save(theaterModel);
+        return null;
     }
 
     @Override
@@ -81,7 +118,7 @@ public class TheaterService implements TheaterDao {
         Boolean theaterExists = theaterReqRepository.existsById(id);
         TheaterModel theater = theaterReqRepository.findById(id).orElse(null);
 
-        if(theaterExists){
+        if (theaterExists) {
             theaterReqRepository.deleteById(id);
         }
 

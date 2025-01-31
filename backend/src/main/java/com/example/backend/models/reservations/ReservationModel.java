@@ -23,25 +23,21 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name="reservations")
+@Entity(name = "reservations")
 @Builder
 public class ReservationModel {
 
     @GeneratedValue
     @Id
-    public UUID id; 
-    public Date date; 
+    public UUID id;
+    public Date date;
     public Time time;
     public Double totalPrice;
 
-    //Customer 
-    
-    @OneToOne
-    @JoinColumn(name="showtime")
-    public ShowtimeModel showtime;
+    // Customer
 
-   
-    @Builder.Default
-    @OneToMany(mappedBy="reservation")
-    public Collection<SeatModel> seats = new ArrayList<>();
+    // showtime rel
+
+    // reservation rel
+
 }

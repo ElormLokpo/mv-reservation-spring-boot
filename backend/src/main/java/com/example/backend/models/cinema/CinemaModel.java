@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 import com.example.backend.models.theater.TheaterModel;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -26,10 +27,10 @@ public class CinemaModel {
     @Id
     public UUID id;
 
-    @NotEmpty(message = "Name of cinema is required")
     public String name;
     public String location;
 
+    @JsonIgnore
     @Builder.Default
     @OneToMany(mappedBy = "cinema", fetch = FetchType.LAZY, orphanRemoval = true)
     public Collection<TheaterModel> theaters = new ArrayList<>();

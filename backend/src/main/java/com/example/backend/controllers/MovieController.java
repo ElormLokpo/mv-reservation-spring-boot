@@ -55,24 +55,23 @@ public class MovieController {
 
     @GetMapping(path = "{id}")
     public ResponseEntity<ResponseGen> getMovie(@PathVariable UUID id) {
-        Optional<MovieModel> movie = movieService.getMovie(id);
+        MovieModel movie = movieService.getMovie(id).orElse(null);
 
-        ResponseGen response = ResponseGen.builder()
-                .success(true)
-                .message("Movie query successul")
-                .data(movie)
-                .build();
+     
+        ResponseGen response = ResponseGen.builder().build();
 
-        ResponseGen notFoundresponse = ResponseGen.builder()
-                .success(false)
-                .message("Movie not found")
-                .data(null)
-                .build();
+        if (movie != null) {
+            response.setSuccess(true);
+            response.setMessage("Movie query successful");
+            response.setData(movie);
 
-        return movie.map(movieS -> ResponseEntity.ok(response))
-                .orElseGet(() -> ResponseEntity
-                        .status(HttpStatus.NOT_FOUND)
-                        .body(notFoundresponse));
+            return ResponseEntity.ok(response);
+        }
+
+        response.setSuccess(false);
+        response.setMessage("Movie not found");
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
     @PostMapping

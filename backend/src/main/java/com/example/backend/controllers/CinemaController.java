@@ -49,30 +49,28 @@ public class CinemaController {
 
                 responseFromDto.setSuccess(true);
                 responseFromDto.setMessage("Cinema query successful");
-        
+
                 return ResponseEntity.ok(responseFromDto);
         }
 
         @GetMapping(path = "{id}")
         public ResponseEntity<ResponseGen> getCinema(@PathVariable UUID id) {
-                Optional<CinemaModel> cinema = cinemaService.getCinema(id);
+                CinemaModel cinema = cinemaService.getCinema(id).orElse(null);
 
-                ResponseGen response = ResponseGen.builder()
-                                .success(true)
-                                .message("Cinema query successful")
-                                .data(cinema)
-                                .build();
+                ResponseGen response = ResponseGen.builder().build();
 
-                ResponseGen notFoundResponse = ResponseGen.builder()
-                                .success(false)
-                                .message("Cinema not found")
-                                .data(null)
-                                .build();
+                if (cinema != null) {
+                        response.setSuccess(true);
+                        response.setMessage("Cinema query successful");
+                        response.setData(cinema);
 
-                return cinema.map(cinemaS -> ResponseEntity.ok(response))
-                                .orElseGet(() -> ResponseEntity
-                                                .status(HttpStatus.NOT_FOUND)
-                                                .body(notFoundResponse));
+                        return ResponseEntity.ok(response);
+                }
+
+                response.setSuccess(false);
+                response.setMessage("Cinema not found");
+
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
 
         @PostMapping

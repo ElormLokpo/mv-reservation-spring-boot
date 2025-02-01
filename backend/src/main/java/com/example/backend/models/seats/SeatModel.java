@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import com.example.backend.models.reservations.ReservationModel;
 import com.example.backend.models.theater.TheaterModel;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -36,6 +37,7 @@ public class SeatModel {
     // Reservation rel
 
     // Theater rel
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="theater_id")
     public TheaterModel theater;

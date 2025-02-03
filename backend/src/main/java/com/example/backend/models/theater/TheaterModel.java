@@ -50,7 +50,4 @@ public class TheaterModel {
     @JoinColumn(name = "cinema_id")
     public CinemaModel cinema;
 
-    @ManyToOne  
-    @JoinColumn(name="showtime_id")
-    public ShowtimeModel showtime;
 }

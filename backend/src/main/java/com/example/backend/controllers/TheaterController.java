@@ -69,23 +69,23 @@ public class TheaterController {
 
     @GetMapping("{id}")
     public ResponseEntity<ResponseGen> getTheater(@PathVariable UUID id) {
-        Optional<TheaterModel> theaterFound = theaterService.getTheater(id);
-        ResponseGen response = ResponseGen.builder()
-                .success(true)
-                .message("Theater query successful")
-                .data(theaterFound)
-                .build();
+        TheaterModel theaterFound = theaterService.getTheater(id).orElse(null);
 
-        ResponseGen notFoundResponse = ResponseGen.builder()
-                .success(false)
-                .message("Theater not found")
-                .data(null)
-                .build();
+        ResponseGen response = ResponseGen.builder().build();
 
-        return theaterFound.map(theatR -> ResponseEntity.ok(response))
-                .orElseGet(() -> ResponseEntity
-                        .status(HttpStatus.NOT_FOUND)
-                        .body(notFoundResponse));
+        if (theaterFound != null) {
+            response.setSuccess(true);
+            response.setMessage("Theater query successful");
+            response.setData(theaterFound);
+
+            return ResponseEntity.ok(response);
+        }
+
+        response.setSuccess(false);
+        response.setMessage("Theater not found");
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+
     }
 
     @PostMapping("{cinemaId}")

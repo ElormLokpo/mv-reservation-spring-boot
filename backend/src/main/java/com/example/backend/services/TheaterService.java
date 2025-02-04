@@ -115,10 +115,9 @@ public class TheaterService implements TheaterDao {
 
     @Override
     public TheaterModel deleteTheater(UUID id) {
-        Boolean theaterExists = theaterReqRepository.existsById(id);
         TheaterModel theater = theaterReqRepository.findById(id).orElse(null);
 
-        if (theaterExists) {
+        if (theater != null) {
             theaterReqRepository.deleteById(id);
         }
 

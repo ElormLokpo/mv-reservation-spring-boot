@@ -89,10 +89,10 @@ public class MovieService implements MovieDao {
 
     @Override
     public MovieModel deleteMovie(UUID id) {
-        Boolean movieFound = movieRepository.existsById(id);
+
         MovieModel movie = movieRepository.findById(id).orElse(null);
 
-        if (movieFound) {
+        if (movie != null) {
             movieRepository.deleteById(id);
         }
 

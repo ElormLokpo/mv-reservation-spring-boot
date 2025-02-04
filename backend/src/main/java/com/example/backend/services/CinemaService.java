@@ -69,10 +69,9 @@ public class CinemaService implements CinemaDao {
 
     @Override
     public CinemaModel deleteCinema(UUID id) {
-        Boolean cinemaExists = cinemaRepository.existsById(id);
         CinemaModel cinema = cinemaRepository.findById(id).orElse(null);
 
-        if (cinemaExists == true) {
+        if (cinema != null) {
             cinemaRepository.deleteById(id);
             return cinema;
         }

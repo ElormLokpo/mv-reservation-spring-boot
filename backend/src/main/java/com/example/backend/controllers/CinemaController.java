@@ -70,7 +70,7 @@ public class CinemaController {
                 response.setSuccess(false);
                 response.setMessage("Cinema not found");
 
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
         @PostMapping

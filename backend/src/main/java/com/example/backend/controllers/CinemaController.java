@@ -70,7 +70,7 @@ public class CinemaController {
                 response.setSuccess(false);
                 response.setMessage("Cinema not found");
 
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
         @PostMapping
@@ -88,15 +88,22 @@ public class CinemaController {
 
         @DeleteMapping(path = "{id}")
         public ResponseEntity<ResponseGen> deleteCinema(@PathVariable UUID id) {
-                CinemaModel deletedCinema = cinemaService.deleteCinema(id);
+                CinemaModel cinema = cinemaService.deleteCinema(id);
+                ResponseGen response = ResponseGen.builder().build();
 
-                ResponseGen response = ResponseGen.builder()
-                                .success(true)
-                                .message("Cinema deleted successfully")
-                                .data(deletedCinema)
-                                .build();
-
-                return ResponseEntity.ok(response);
+                if (cinema != null) {
+                    response.setSuccess(true);
+                    response.setMessage("Cinema delete successful");
+                    response.setData(cinema);
+        
+                    return ResponseEntity.ok(response);
+                }
+        
+                response.setSuccess(false);
+                response.setMessage("Cinema not found");
+                response.setData(cinema);
+        
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
 }

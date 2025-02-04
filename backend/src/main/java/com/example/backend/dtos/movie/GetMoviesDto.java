@@ -1,9 +1,7 @@
 package com.example.backend.dtos.movie;
 
 import java.sql.Date;
-import java.util.Collection;
 import java.util.UUID;
-import com.example.backend.models.showtime.ShowtimeModel;
 import lombok.Builder;
 import lombok.Data;
 ;
@@ -17,5 +15,5 @@ public class GetMoviesDto {
     public String genre;
     public Date releaseDate;
     public Integer duration;
-    public Collection<ShowtimeModel> showtimes;
+   
 }

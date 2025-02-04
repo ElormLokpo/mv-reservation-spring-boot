@@ -80,10 +80,9 @@ public class SeatService implements SeatDao {
 
     @Override
     public SeatModel deleteSeat(UUID id) {
-        Boolean seatExists = seatRepository.existsById(id);
         SeatModel seatModel = seatRepository.findById(id).orElse(null);
 
-        if(seatExists){
+        if(seatModel != null){
             seatRepository.deleteById(id);
         }
 

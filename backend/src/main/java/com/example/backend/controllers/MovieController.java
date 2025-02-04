@@ -114,15 +114,22 @@ public class MovieController {
 
     @DeleteMapping(path="{id}")
     public ResponseEntity<ResponseGen> deleteMovie(@PathVariable UUID id){
-        MovieModel deletedMovie = movieService.deleteMovie(id);
+        MovieModel movie = movieService.deleteMovie(id);
+        ResponseGen response = ResponseGen.builder().build();
 
-        ResponseGen response = ResponseGen.builder()
-        .success(true)
-        .message("Movie deleted successully")
-        .data(deletedMovie)
-        .build();
+        if (movie != null) {
+            response.setSuccess(true);
+            response.setMessage("Movie delete successful");
+            response.setData(movie);
 
-        return ResponseEntity.ok(response);
+            return ResponseEntity.ok(response);
+        }
+
+        response.setSuccess(false);
+        response.setMessage("Movie not found");
+        response.setData(movie);
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
 }

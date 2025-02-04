@@ -10,9 +10,9 @@ import com.example.backend.models.showtime.ShowtimeModel;
 public interface ShowtimeDao {
     public ResponseDto getAllShowtimes(int pageNo, int pageSize, String sortBy, String sortDir);
 
-    public ResponseDto getAllShowtimeByMovie(UUID movieId, int pageNo, int pageSize, String sortBy, String sortDir);
+    public ResponseDto getAllShowtimesByMovie(UUID movieId, int pageNo, int pageSize, String sortBy, String sortDir);
 
-    public ResponseDto getAllShowtimeByTheater(UUID theaterId, int pageNo, int pageSize, String sortBy, String sortDir);
+    public ResponseDto getAllShowtimesByTheater(UUID theaterId, int pageNo, int pageSize, String sortBy, String sortDir);
 
     public Optional<ShowtimeModel> getShowtime(UUID id);
 

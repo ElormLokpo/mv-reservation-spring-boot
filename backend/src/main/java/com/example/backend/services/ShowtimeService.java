@@ -17,16 +17,18 @@ import com.example.backend.dtos.showtime.CreateShowtimeDto;
 import com.example.backend.dtos.showtime.GetShowtimeDto;
 import com.example.backend.mappers.ShowtimeMapper;
 import com.example.backend.models.showtime.ShowtimeModel;
+import com.example.backend.models.theater.TheaterModel;
 import com.example.backend.repositories.ShowtimeRepository;
-
 
 @Service
 public class ShowtimeService implements ShowtimeDao {
 
     ShowtimeRepository showtimeRepository;
+    TheaterService theaterService;
 
-    public ShowtimeService(ShowtimeRepository _showtimeRepository) {
+    public ShowtimeService(ShowtimeRepository _showtimeRepository, TheaterService _theaterService) {
         showtimeRepository = _showtimeRepository;
+        theaterService = _theaterService;
     }
 
     @Override
@@ -38,7 +40,8 @@ public class ShowtimeService implements ShowtimeDao {
         Page<ShowtimeModel> showtimePage = showtimeRepository.findAll(pageable);
 
         Collection<ShowtimeModel> showTimes = showtimePage.getContent();
-        Collection<GetShowtimeDto> showTimeList = showTimes.stream().map(showtime -> ShowtimeMapper.INSTANCE.ShowtimeToDtoModel(showtime)).collect(Collectors.toList());
+        Collection<GetShowtimeDto> showTimeList = showTimes.stream()
+                .map(showtime -> ShowtimeMapper.INSTANCE.ShowtimeToDtoModel(showtime)).collect(Collectors.toList());
 
         ResponseDto response = ResponseDto.builder()
                 .data(showTimeList)
@@ -53,7 +56,7 @@ public class ShowtimeService implements ShowtimeDao {
     }
 
     @Override
-    public ResponseDto getAllShowtimeByMovie(UUID movieId, int pageNo, int pageSize, String sortBy, String sortDir) {
+    public ResponseDto getAllShowtimesByMovie(UUID movieId, int pageNo, int pageSize, String sortBy, String sortDir) {
 
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
@@ -63,7 +66,8 @@ public class ShowtimeService implements ShowtimeDao {
 
         Collection<ShowtimeModel> showTimes = showtimePage.getContent();
 
-        Collection<GetShowtimeDto> showTimeList = showTimes.stream().map(showtime -> ShowtimeMapper.INSTANCE.ShowtimeToDtoModel(showtime)).collect(Collectors.toList());
+        Collection<GetShowtimeDto> showTimeList = showTimes.stream()
+                .map(showtime -> ShowtimeMapper.INSTANCE.ShowtimeToDtoModel(showtime)).collect(Collectors.toList());
 
         ResponseDto response = ResponseDto.builder()
                 .data(showTimeList)
@@ -79,26 +83,27 @@ public class ShowtimeService implements ShowtimeDao {
     }
 
     @Override
-    public ResponseDto getAllShowtimeByTheater(UUID theaterId, int pageNo, int pageSize, String sortBy,
+    public ResponseDto getAllShowtimesByTheater(UUID theaterId, int pageNo, int pageSize, String sortBy,
             String sortDir) {
-                Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
 
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Page<ShowtimeModel> showtimePage = showtimeRepository.findAll(pageable);
 
         Collection<ShowtimeModel> showTimes = showtimePage.getContent();
-        Collection<GetShowtimeDto> showTimeList = showTimes.stream().map(showtime -> ShowtimeMapper.INSTANCE.ShowtimeToDtoModel(showtime)).collect(Collectors.toList());
+        Collection<GetShowtimeDto> showTimeList = showTimes.stream()
+                .map(showtime -> ShowtimeMapper.INSTANCE.ShowtimeToDtoModel(showtime)).collect(Collectors.toList());
 
         ResponseDto response = ResponseDto.builder()
-        .data(showTimeList)
-        .pageNumber(showtimePage.getNumber())
-        .pageSize(showtimePage.getSize())
-        .totalElements(showtimePage.getTotalElements())
-        .totalPages(showtimePage.getTotalPages())
-        .isLastPage(showtimePage.isLast())
-        .build();
-        
+                .data(showTimeList)
+                .pageNumber(showtimePage.getNumber())
+                .pageSize(showtimePage.getSize())
+                .totalElements(showtimePage.getTotalElements())
+                .totalPages(showtimePage.getTotalPages())
+                .isLastPage(showtimePage.isLast())
+                .build();
+
         return response;
     }
 
@@ -109,9 +114,13 @@ public class ShowtimeService implements ShowtimeDao {
 
     @Override
     public ShowtimeModel createShowtime(CreateShowtimeDto showtimeDto) {
-       ShowtimeModel showtime = ShowtimeMapper.INSTANCE.ShowtimeDtoToModel(showtimeDto);
-       //set total number of theater seats in relation to the seat model
-       return null;
+        ShowtimeModel showtime = ShowtimeMapper.INSTANCE.ShowtimeDtoToModel(showtimeDto);
+        TheaterModel theaterModel = theaterService.getTheater(showtimeDto.movieTheater.theaterId).orElse(null);
+
+        showtime.setAvailableSeats(theaterModel.getSeatingCapacity());
+
+        showtimeRepository.save(showtime);
+        return showtime;
     }
 
     @Override

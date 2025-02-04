@@ -1,9 +1,7 @@
 package com.example.backend.models.showtime;
 
-import java.sql.Date;
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.UUID;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -24,8 +22,8 @@ public class ShowtimeModel {
     @GeneratedValue
     @Id
     public UUID id;
-    public Date date;
-    public Time time;
+    public LocalDate date;
+    public LocalTime time;
 
     @Builder.Default
     public int availableSeats = 0;

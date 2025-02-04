@@ -92,7 +92,7 @@ public class ShowtimeService implements ShowtimeDao {
                                 : Sort.by(sortBy).descending();
 
                 Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-                Page<ShowtimeModel> showtimePage = showtimeRepository.findAll(pageable);
+                Page<ShowtimeModel> showtimePage = showtimeRepository.findShowTimesByTheater(theaterId, pageable);
 
                 Collection<ShowtimeModel> showTimes = showtimePage.getContent();
                 Collection<GetShowtimeDto> showTimeList = showTimes.stream()

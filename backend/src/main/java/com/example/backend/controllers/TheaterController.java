@@ -105,15 +105,22 @@ public class TheaterController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<ResponseGen> deleteTheater(@PathVariable UUID id) {
-        TheaterModel theaterModel = theaterService.deleteTheater(id);
+        TheaterModel theater = theaterService.deleteTheater(id);
+        ResponseGen response = ResponseGen.builder().build();
 
-        ResponseGen response = ResponseGen.builder()
-                .success(true)
-                .message("Theater delete successful")
-                .data(theaterModel)
-                .build();
+        if (theater != null) {
+            response.setSuccess(true);
+            response.setMessage("Theater delete successful");
+            response.setData(theater);
 
-        return ResponseEntity.ok(response);
+            return ResponseEntity.ok(response);
+        }
+
+        response.setSuccess(false);
+        response.setMessage("Theater not found");
+        response.setData(theater);
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
 }

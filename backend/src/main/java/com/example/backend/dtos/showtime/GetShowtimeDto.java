@@ -1,14 +1,15 @@
 package com.example.backend.dtos.showtime;
 
-import java.sql.Date;
-import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 import com.example.backend.models.showtime.MovieTheater;
 import lombok.Data;
 
 @Data
 public class GetShowtimeDto {
-    public Date date;
-    public Time time;
+    public LocalDate date;
+    public LocalTime time;
     public int availableSeats;
 
     public MovieTheater movieTheater;

@@ -63,20 +63,6 @@ public class SeatService implements SeatDao {
 
     }
 
-    @Override
-    public SeatModel createSeat(UUID theaterId, CreateSeatDto seatDto) {
-        TheaterModel theater = theaterService.getTheater(theaterId);
-
-        SeatModel seat = SeatModel.builder()
-                .srow(seatDto.getSrow())
-                .scolumn(seatDto.getScolumn())
-                .theater(theater)
-                .build();
-
-        seatRepository.save(seat);
-        return seat;
-
-    }
 
     @Override
     public SeatModel deleteSeat(UUID id) {

@@ -10,6 +10,7 @@ import com.example.backend.models.seats.SeatModel;
 import com.example.backend.models.showtime.ShowtimeModel;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -17,7 +18,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -43,7 +43,7 @@ public class TheaterModel {
 
     @JsonIgnore
     @Builder.Default
-    @OneToMany(mappedBy = "theater", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "theater", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     public Set<SeatModel> seats = new HashSet<>();
 
     @ManyToOne

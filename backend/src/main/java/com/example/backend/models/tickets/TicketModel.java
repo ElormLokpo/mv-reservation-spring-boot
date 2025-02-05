@@ -33,4 +33,6 @@ public class TicketModel {
     @ManyToOne
     @JoinColumn(name = "showtime_id")
     public ShowtimeModel showtime;
+
+    public UUID seat;
 }

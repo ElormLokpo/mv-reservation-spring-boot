@@ -9,6 +9,8 @@ public class GetTicketDto {
     public Double price;
 
     public TicketStateEnum ticketState = TicketStateEnum.Pending;
-    
     public ShowtimeModel showtime;
+
+    public UUID seat;
+
 }

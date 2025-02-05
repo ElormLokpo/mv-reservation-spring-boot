@@ -15,6 +15,7 @@ import com.example.backend.daos.SeatDao;
 import com.example.backend.dtos.ResponseDto;
 import com.example.backend.dtos.seat.CreateSeatDto;
 import com.example.backend.dtos.seat.GetSeatDto;
+import com.example.backend.exceptions.ResourceNotfoundException;
 import com.example.backend.mappers.SeatMapper;
 import com.example.backend.models.seats.SeatModel;
 import com.example.backend.models.theater.TheaterModel;
@@ -56,35 +57,33 @@ public class SeatService implements SeatDao {
     }
 
     @Override
-    public Optional<SeatModel> getSeat(UUID id) {
-        return seatRepository.findById(id);
+    public SeatModel getSeat(UUID id) {
+        return seatRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotfoundException("Movie with id:" + id + " not found"));
+
     }
 
     @Override
     public SeatModel createSeat(UUID theaterId, CreateSeatDto seatDto) {
-        TheaterModel theater = theaterService.getTheater(theaterId).orElse(null);
+        TheaterModel theater = theaterService.getTheater(theaterId);
 
-        if (theater != null) {
-            SeatModel seat = SeatModel.builder()
-            .srow(seatDto.getSrow())
-            .scolumn(seatDto.getScolumn())
-            .theater(theater)
-            .build();
+        SeatModel seat = SeatModel.builder()
+                .srow(seatDto.getSrow())
+                .scolumn(seatDto.getScolumn())
+                .theater(theater)
+                .build();
 
-            seatRepository.save(seat);
-            return seat;
-        }
+        seatRepository.save(seat);
+        return seat;
 
-        return null;
     }
 
     @Override
     public SeatModel deleteSeat(UUID id) {
-        SeatModel seatModel = seatRepository.findById(id).orElse(null);
+        SeatModel seatModel = seatRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotfoundException("Movie with id:" + id + " not found"));
 
-        if(seatModel != null){
-            seatRepository.deleteById(id);
-        }
+        seatRepository.deleteById(id);
 
         return seatModel;
     }

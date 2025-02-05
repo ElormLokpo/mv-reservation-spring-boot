@@ -38,10 +38,10 @@ public class MovieController {
 
     @GetMapping
     public ResponseEntity<ResponseGen> getAllMovies(
-        @RequestParam(value="pageNo", defaultValue = "0", required = false) int pageNo,
-        @RequestParam(value="pageSize", defaultValue = "10", required = false) int pageSize,
-        @RequestParam(value="sortBy", defaultValue = "title", required = false) String sortBy,
-        @RequestParam(value="sortDir", defaultValue = "asc", required = false) String sortDir
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "title", required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
 
     ) {
         ResponseDto moviesResponseDto = movieService.getAllMovies(pageNo, pageSize, sortBy, sortDir);
@@ -55,81 +55,64 @@ public class MovieController {
 
     @GetMapping(path = "{id}")
     public ResponseEntity<ResponseGen> getMovie(@PathVariable UUID id) {
-        MovieModel movie = movieService.getMovie(id).orElse(null);
+        MovieModel movie = movieService.getMovie(id);
+        ResponseGen response = ResponseGen.builder()
+                .success(true)
+                .message("Movie query successful")
+                .data(movie)
+                .build();
 
-     
-        ResponseGen response = ResponseGen.builder().build();
-
-        if (movie != null) {
-            response.setSuccess(true);
-            response.setMessage("Movie query successful");
-            response.setData(movie);
-
-            return ResponseEntity.ok(response);
-        }
-
-        response.setSuccess(false);
-        response.setMessage("Movie not found");
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<ResponseGen> createMovie(@RequestBody CreateMovieDto moviedto){
+    public ResponseEntity<ResponseGen> createMovie(@RequestBody CreateMovieDto moviedto) {
         MovieModel movieCreated = movieService.createMovie(moviedto);
 
         ResponseGen response = ResponseGen.builder()
-        .success(true)
-        .message("Movie creation successul")
-        .data(movieCreated)
-        .build();
+                .success(true)
+                .message("Movie creation successul")
+                .data(movieCreated)
+                .build();
 
         return ResponseEntity.ok(response);
     }
 
-    //Work on update logic
-    @PatchMapping(path="{id}")
-    public ResponseEntity<ResponseGen> updateMovie(@PathVariable UUID id, @RequestBody CreateMovieDto movieDto){
+    // Work on update logic
+    @PatchMapping(path = "{id}")
+    public ResponseEntity<ResponseGen> updateMovie(@PathVariable UUID id, @RequestBody CreateMovieDto movieDto) {
         Boolean movieUpdated = movieService.updateMovie(id, movieDto);
         ResponseGen response;
 
-        if(movieUpdated == true){
+        if (movieUpdated == true) {
             response = ResponseGen.builder()
-            .success(true)
-            .message("Movie updated successully")
-            .data(null)
-            .build();
-        }else{
+                    .success(true)
+                    .message("Movie updated successully")
+                    .data(null)
+                    .build();
+        } else {
             response = ResponseGen.builder()
-            .success(false)
-            .message("Movie not found")
-            .data(null)
-            .build();
+                    .success(false)
+                    .message("Movie not found")
+                    .data(null)
+                    .build();
         }
-
 
         return ResponseEntity.ok(response);
-        
+
     }
 
-    @DeleteMapping(path="{id}")
-    public ResponseEntity<ResponseGen> deleteMovie(@PathVariable UUID id){
+    @DeleteMapping(path = "{id}")
+    public ResponseEntity<ResponseGen> deleteMovie(@PathVariable UUID id) {
         MovieModel movie = movieService.deleteMovie(id);
-        ResponseGen response = ResponseGen.builder().build();
+        ResponseGen response = ResponseGen.builder()
+                .success(true)
+                .message("Movie delete successful")
+                .data(movie)
+                .build();
 
-        if (movie != null) {
-            response.setSuccess(true);
-            response.setMessage("Movie delete successful");
-            response.setData(movie);
+        return ResponseEntity.ok(response);
 
-            return ResponseEntity.ok(response);
-        }
-
-        response.setSuccess(false);
-        response.setMessage("Movie not found");
-        response.setData(movie);
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
 }

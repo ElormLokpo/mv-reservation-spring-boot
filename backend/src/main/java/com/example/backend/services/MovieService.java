@@ -15,6 +15,7 @@ import com.example.backend.daos.MovieDao;
 import com.example.backend.dtos.ResponseDto;
 import com.example.backend.dtos.movie.CreateMovieDto;
 import com.example.backend.dtos.movie.GetMoviesDto;
+import com.example.backend.exceptions.ResourceNotfoundException;
 import com.example.backend.mappers.MovieMapper;
 import com.example.backend.models.movie.MovieModel;
 import com.example.backend.repositories.MovieRepository;
@@ -55,8 +56,9 @@ public class MovieService implements MovieDao {
     }
 
     @Override
-    public Optional<MovieModel> getMovie(UUID id) {
-        return movieRepository.findById(id);
+    public MovieModel getMovie(UUID id) {
+        return movieRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotfoundException("Movie with id:" + id + " not found"));
     }
 
     @Override
@@ -90,11 +92,9 @@ public class MovieService implements MovieDao {
     @Override
     public MovieModel deleteMovie(UUID id) {
 
-        MovieModel movie = movieRepository.findById(id).orElse(null);
-
-        if (movie != null) {
-            movieRepository.deleteById(id);
-        }
+        MovieModel movie = movieRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotfoundException("Movie with id:" + id + " not found"));
+        movieRepository.deleteById(id);
 
         return movie;
     }

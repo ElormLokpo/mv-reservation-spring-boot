@@ -2,22 +2,17 @@ package com.example.backend.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.example.backend.dtos.ResponseDto;
 import com.example.backend.mappers.ResponseMapper;
 import com.example.backend.models.showtime.ShowtimeModel;
 import com.example.backend.services.ShowtimeService;
 import com.example.backend.utils.ResponseGen;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
 import java.util.UUID;
-
 import com.example.backend.dtos.showtime.CreateShowtimeDto;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -85,29 +80,23 @@ public class ShowtimeController {
 
     @GetMapping("{id}")
     public ResponseEntity<ResponseGen> getShowtime(@PathVariable UUID id) {
-        ShowtimeModel showtime = showtimeService.getShowtime(id).orElse(null);
-        ResponseGen response = ResponseGen.builder().build();
+        ShowtimeModel showtime = showtimeService.getShowtime(id);
+        ResponseGen response = ResponseGen.builder()
+                .success(true)
+                .message("Showtime query successful")
+                .data(showtime)
+                .build();
 
-        if (showtime != null) {
-            response.setSuccess(true);
-            response.setMessage("Showtime query successful");
-            response.setData(showtime);
+        return ResponseEntity.ok(response);
 
-            return ResponseEntity.ok(response);
-        }
-
-        response.setSuccess(false);
-        response.setMessage("Showtime not found");
-        response.setData(showtime);
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
     @PostMapping
     public ResponseEntity<ResponseGen> createSthowtime(@RequestBody CreateShowtimeDto showtimeDto) {
         ShowtimeModel showtime = showtimeService.createShowtime(showtimeDto);
 
-        //handle showtime conflict checks...same two diff movies same theater...same time
+        // handle showtime conflict checks...same two diff movies same theater...same
+        // time
 
         ResponseGen response = ResponseGen.builder()
                 .success(true)
@@ -121,21 +110,13 @@ public class ShowtimeController {
     @DeleteMapping("{id}")
     public ResponseEntity<ResponseGen> deleteShowtime(@PathVariable UUID id) {
         ShowtimeModel showtime = showtimeService.deleteShowtime(id);
-        ResponseGen response = ResponseGen.builder().build();
+        ResponseGen response = ResponseGen.builder()
+        .success(true)
+        .message("Showtime deletion successful")
+        .data(showtime)
+        .build();
 
-        if (showtime != null) {
-            response.setSuccess(true);
-            response.setMessage("Showtime delete successful");
-            response.setData(showtime);
-
-            return ResponseEntity.ok(response);
-        }
-
-        response.setSuccess(false);
-        response.setMessage("Showtime not found");
-        response.setData(showtime);
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        return ResponseEntity.ok(response);
     }
 
 }

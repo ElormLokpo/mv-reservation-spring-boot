@@ -1,7 +1,6 @@
 package com.example.backend.services;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -15,6 +14,7 @@ import com.example.backend.daos.ShowtimeDao;
 import com.example.backend.dtos.ResponseDto;
 import com.example.backend.dtos.showtime.CreateShowtimeDto;
 import com.example.backend.dtos.showtime.GetShowtimeDto;
+import com.example.backend.exceptions.ResourceNotfoundException;
 import com.example.backend.mappers.ShowtimeMapper;
 import com.example.backend.models.showtime.ShowtimeModel;
 import com.example.backend.models.theater.TheaterModel;
@@ -112,14 +112,15 @@ public class ShowtimeService implements ShowtimeDao {
         }
 
         @Override
-        public Optional<ShowtimeModel> getShowtime(UUID id) {
-                return showtimeRepository.findById(id);
+        public ShowtimeModel getShowtime(UUID id) {
+                return showtimeRepository.findById(id)
+                                .orElseThrow(() -> new ResourceNotfoundException("Movie with id:" + id + " not found"));
         }
 
         @Override
         public ShowtimeModel createShowtime(CreateShowtimeDto showtimeDto) {
                 ShowtimeModel showtime = ShowtimeMapper.INSTANCE.ShowtimeDtoToModel(showtimeDto);
-                TheaterModel theaterModel = theaterService.getTheater(showtimeDto.movieTheater.theaterId).orElse(null);
+                TheaterModel theaterModel = theaterService.getTheater(showtimeDto.movieTheater.theaterId);
 
                 showtime.setAvailableSeats(theaterModel.getSeatingCapacity());
 
@@ -129,14 +130,12 @@ public class ShowtimeService implements ShowtimeDao {
 
         @Override
         public ShowtimeModel deleteShowtime(UUID id) {
-                ShowtimeModel showtime = showtimeRepository.findById(id).orElse(null);
+                ShowtimeModel showtime = showtimeRepository.findById(id)
+                                .orElseThrow(() -> new ResourceNotfoundException("Movie with id:" + id + " not found"));
 
-                if (showtime != null) {
-                        showtimeRepository.deleteById(id);
-                        return showtime;
-                }
+                showtimeRepository.deleteById(id);
+                return showtime;
 
-                return null;
         }
 
 }

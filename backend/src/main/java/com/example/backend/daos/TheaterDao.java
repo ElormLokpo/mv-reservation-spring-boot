@@ -12,7 +12,7 @@ public interface TheaterDao {
 
     public ResponseDto getAllTheatersByCinema(UUID cinemaId, int pageNo, int pageSize, String sortBy, String sortDir);
 
-    public Optional<TheaterModel> getTheater(UUID id);
+    public TheaterModel getTheater(UUID id);
 
     public TheaterModel createTheater(UUID cinemaId, CreateTheaterDto theaterDto);
 

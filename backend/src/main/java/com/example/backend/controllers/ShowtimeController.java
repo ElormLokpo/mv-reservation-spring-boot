@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.UUID;
 import com.example.backend.dtos.showtime.CreateShowtimeDto;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -90,7 +91,7 @@ public class ShowtimeController {
         return ResponseEntity.ok(response);
 
     }
-
+    
     @PostMapping
     public ResponseEntity<ResponseGen> createSthowtime(@RequestBody CreateShowtimeDto showtimeDto) {
         ShowtimeModel showtime = showtimeService.createShowtime(showtimeDto);

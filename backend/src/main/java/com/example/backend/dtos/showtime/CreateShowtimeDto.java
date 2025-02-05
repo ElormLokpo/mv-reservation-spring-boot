@@ -10,6 +10,7 @@ import lombok.Data;
 public class CreateShowtimeDto {
     public LocalDate date;
     public LocalTime time;
+    public Double rate;
 
     public MovieTheater movieTheater;
 

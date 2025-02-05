@@ -54,58 +54,41 @@ public class SeatController {
 
     @GetMapping("{id}")
     public ResponseEntity<ResponseGen> getSeat(@PathVariable UUID id) {
-        SeatModel seat = seatService.getSeat(id).orElse(null);
+        SeatModel seat = seatService.getSeat(id);
 
-        ResponseGen response = ResponseGen.builder().build();
+        ResponseGen response = ResponseGen.builder()
+                .success(true)
+                .message("Seat query successful")
+                .data(seat)
+                .build();
 
-        if (seat != null) {
-            response.setSuccess(true);
-            response.setMessage("Seat query successful");
-            response.setData(seat);
-
-            return ResponseEntity.ok(response);
-        }
-
-        response.setSuccess(false);
-        response.setMessage("Seat not found");
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        return ResponseEntity.ok(response);
 
     }
 
     @PostMapping("{theaterId}")
-    public ResponseEntity<ResponseGen> createSeat(@PathVariable UUID theaterId, @RequestBody CreateSeatDto seatDto){
+    public ResponseEntity<ResponseGen> createSeat(@PathVariable UUID theaterId, @RequestBody CreateSeatDto seatDto) {
         SeatModel seat = seatService.createSeat(theaterId, seatDto);
 
         ResponseGen response = ResponseGen.builder()
-        .success(true)
-        .message("Seat creation successful")
-        .data(seat)
-        .build();
+                .success(true)
+                .message("Seat creation successful")
+                .data(seat)
+                .build();
 
         return ResponseEntity.ok(response);
     }
-
 
     @DeleteMapping("{id}")
     public ResponseEntity<ResponseGen> deleteSeat(@PathVariable UUID id) {
         SeatModel seat = seatService.deleteSeat(id);
 
-        ResponseGen response = ResponseGen.builder().build();
-
-        if (seat != null) {
-            response.setSuccess(true);
-            response.setMessage("Seat delete successful");
-            response.setData(seat);
-
-            return ResponseEntity.ok(response);
-        }
-
-        response.setSuccess(false);
-        response.setMessage("Seat not found");
-
+        ResponseGen response = ResponseGen.builder()
+        .success(true)
+        .message("Seat delete successful")
+        .data(seat)
+        .build();
         return ResponseEntity.ok(response);
-
     }
 
 }

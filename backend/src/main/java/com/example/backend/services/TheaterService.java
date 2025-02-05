@@ -1,26 +1,21 @@
 package com.example.backend.services;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import com.example.backend.daos.TheaterDao;
 import com.example.backend.dtos.ResponseDto;
-import com.example.backend.dtos.cinema.GetCinemaDto;
 import com.example.backend.dtos.theater.CreateTheaterDto;
 import com.example.backend.dtos.theater.GetTheaterDto;
-import com.example.backend.mappers.CinemaMapper;
+import com.example.backend.exceptions.ResourceNotfoundException;
 import com.example.backend.mappers.TheaterMapper;
 import com.example.backend.models.cinema.CinemaModel;
 import com.example.backend.models.theater.TheaterModel;
-import com.example.backend.repositories.CinemaRepository;
 import com.example.backend.repositories.TheaterRepository;
 
 @Service
@@ -87,39 +82,36 @@ public class TheaterService implements TheaterDao {
     }
 
     @Override
-    public Optional<TheaterModel> getTheater(UUID id) {
-        return theaterReqRepository.findById(id);
+    public TheaterModel getTheater(UUID id) {
+        return theaterReqRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotfoundException("Movie with id:" + id + " not found"));
     }
 
     @Override
     public TheaterModel createTheater(UUID cinemaId, CreateTheaterDto theaterDto) {
 
-        CinemaModel cinemaFound = cinemaService.getCinema(cinemaId).orElse(null);
+        CinemaModel cinemaFound = cinemaService.getCinema(cinemaId);
 
-        if (cinemaFound != null) {
-            TheaterModel newTheater = TheaterModel.builder()
-                    .name(theaterDto.getName())
-                    .location(theaterDto.getLocation())
-                    .seatingCapacity(theaterDto.getSeatingCapacity())
-                    .build();
+        TheaterModel newTheater = TheaterModel.builder()
+                .name(theaterDto.getName())
+                .location(theaterDto.getLocation())
+                .seatingCapacity(theaterDto.getSeatingCapacity())
+                .build();
 
-            newTheater.setCinema(cinemaFound);
+        newTheater.setCinema(cinemaFound);
 
-            theaterReqRepository.save(newTheater);
+        theaterReqRepository.save(newTheater);
 
-            return newTheater;
-        }
+        return newTheater;
 
-        return null;
     }
 
     @Override
     public TheaterModel deleteTheater(UUID id) {
-        TheaterModel theater = theaterReqRepository.findById(id).orElse(null);
+        TheaterModel theater = theaterReqRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotfoundException("Movie with id:" + id + " not found"));
 
-        if (theater != null) {
-            theaterReqRepository.deleteById(id);
-        }
+        theaterReqRepository.deleteById(id);
 
         return theater;
     }

@@ -55,22 +55,16 @@ public class CinemaController {
 
         @GetMapping(path = "{id}")
         public ResponseEntity<ResponseGen> getCinema(@PathVariable UUID id) {
-                CinemaModel cinema = cinemaService.getCinema(id).orElse(null);
+                CinemaModel cinema = cinemaService.getCinema(id);
 
-                ResponseGen response = ResponseGen.builder().build();
+                ResponseGen response = ResponseGen.builder()
+                                .success(true)
+                                .message("Cinema query successful")
+                                .data(cinema)
+                                .build();
 
-                if (cinema != null) {
-                        response.setSuccess(true);
-                        response.setMessage("Cinema query successful");
-                        response.setData(cinema);
+                return ResponseEntity.ok(response);
 
-                        return ResponseEntity.ok(response);
-                }
-
-                response.setSuccess(false);
-                response.setMessage("Cinema not found");
-
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
         @PostMapping
@@ -89,21 +83,13 @@ public class CinemaController {
         @DeleteMapping(path = "{id}")
         public ResponseEntity<ResponseGen> deleteCinema(@PathVariable UUID id) {
                 CinemaModel cinema = cinemaService.deleteCinema(id);
-                ResponseGen response = ResponseGen.builder().build();
+                ResponseGen response = ResponseGen.builder()
+                                .success(true)
+                                .message("Cinema delete successful")
+                                .data(cinema)
+                                .build();
 
-                if (cinema != null) {
-                    response.setSuccess(true);
-                    response.setMessage("Cinema delete successful");
-                    response.setData(cinema);
-        
-                    return ResponseEntity.ok(response);
-                }
-        
-                response.setSuccess(false);
-                response.setMessage("Cinema not found");
-                response.setData(cinema);
-        
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+                return ResponseEntity.ok(response);
         }
 
 }

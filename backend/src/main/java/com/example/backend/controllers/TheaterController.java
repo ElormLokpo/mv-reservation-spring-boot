@@ -69,7 +69,7 @@ public class TheaterController {
 
     @GetMapping("{id}")
     public ResponseEntity<ResponseGen> getTheater(@PathVariable UUID id) {
-        TheaterModel theaterFound = theaterService.getTheater(id).orElse(null);
+        TheaterModel theaterFound = theaterService.getTheater(id);
 
         ResponseGen response = ResponseGen.builder().build();
 

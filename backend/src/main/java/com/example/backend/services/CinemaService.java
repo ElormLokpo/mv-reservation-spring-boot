@@ -1,10 +1,8 @@
 package com.example.backend.services;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +12,7 @@ import com.example.backend.daos.CinemaDao;
 import com.example.backend.dtos.ResponseDto;
 import com.example.backend.dtos.cinema.CreateCinemaDto;
 import com.example.backend.dtos.cinema.GetCinemaDto;
+import com.example.backend.exceptions.ResourceNotfoundException;
 import com.example.backend.mappers.CinemaMapper;
 import com.example.backend.models.cinema.CinemaModel;
 import com.example.backend.repositories.CinemaRepository;
@@ -55,8 +54,9 @@ public class CinemaService implements CinemaDao {
     }
 
     @Override
-    public Optional<CinemaModel> getCinema(UUID id) {
-        return cinemaRepository.findById(id);
+    public CinemaModel getCinema(UUID id) {
+        return cinemaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotfoundException("Cinema with id:" + id + " not found"));
     }
 
     @Override
@@ -69,12 +69,8 @@ public class CinemaService implements CinemaDao {
 
     @Override
     public CinemaModel deleteCinema(UUID id) {
-        CinemaModel cinema = cinemaRepository.findById(id).orElse(null);
-
-        if (cinema != null) {
-            cinemaRepository.deleteById(id);
-            return cinema;
-        }
+        CinemaModel cinema = cinemaRepository.findById(id).orElseThrow(()-> new ResourceNotfoundException("Cinema with id:" + id + " not found"));
+        cinemaRepository.deleteById(id);
 
         return cinema;
     }

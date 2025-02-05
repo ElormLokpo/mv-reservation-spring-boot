@@ -1,6 +1,5 @@
 package com.example.backend.daos;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import com.example.backend.dtos.ResponseDto;
@@ -14,7 +13,7 @@ public interface ShowtimeDao {
 
     public ResponseDto getAllShowtimesByTheater(UUID theaterId, int pageNo, int pageSize, String sortBy, String sortDir);
 
-    public Optional<ShowtimeModel> getShowtime(UUID id);
+    public ShowtimeModel getShowtime(UUID id);
 
     public ShowtimeModel createShowtime(CreateShowtimeDto showtimeDto);
 

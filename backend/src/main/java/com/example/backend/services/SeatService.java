@@ -1,24 +1,19 @@
 package com.example.backend.services;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import com.example.backend.daos.SeatDao;
 import com.example.backend.dtos.ResponseDto;
-import com.example.backend.dtos.seat.CreateSeatDto;
 import com.example.backend.dtos.seat.GetSeatDto;
 import com.example.backend.exceptions.ResourceNotfoundException;
 import com.example.backend.mappers.SeatMapper;
 import com.example.backend.models.seats.SeatModel;
-import com.example.backend.models.theater.TheaterModel;
 import com.example.backend.repositories.SeatRepository;
 
 @Service
@@ -63,20 +58,6 @@ public class SeatService implements SeatDao {
 
     }
 
-    @Override
-    public SeatModel createSeat(UUID theaterId, CreateSeatDto seatDto) {
-        TheaterModel theater = theaterService.getTheater(theaterId);
-
-        SeatModel seat = SeatModel.builder()
-                .srow(seatDto.getSrow())
-                .scolumn(seatDto.getScolumn())
-                .theater(theater)
-                .build();
-
-        seatRepository.save(seat);
-        return seat;
-
-    }
 
     @Override
     public SeatModel deleteSeat(UUID id) {

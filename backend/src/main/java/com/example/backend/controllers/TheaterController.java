@@ -1,26 +1,18 @@
 package com.example.backend.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
-
 import com.example.backend.dtos.ResponseDto;
 import com.example.backend.dtos.theater.CreateTheaterDto;
 import com.example.backend.mappers.ResponseMapper;
-import com.example.backend.models.cinema.CinemaModel;
 import com.example.backend.models.theater.TheaterModel;
-import com.example.backend.services.CinemaService;
 import com.example.backend.services.TheaterService;
 import com.example.backend.utils.ResponseGen;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.Optional;
 import java.util.UUID;
-
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -69,22 +61,15 @@ public class TheaterController {
 
     @GetMapping("{id}")
     public ResponseEntity<ResponseGen> getTheater(@PathVariable UUID id) {
-        TheaterModel theaterFound = theaterService.getTheater(id);
+        TheaterModel theater = theaterService.getTheater(id);
 
-        ResponseGen response = ResponseGen.builder().build();
+        ResponseGen response = ResponseGen.builder()
+                .success(true)
+                .message("Theater query successful")
+                .data(theater)
+                .build();
 
-        if (theaterFound != null) {
-            response.setSuccess(true);
-            response.setMessage("Theater query successful");
-            response.setData(theaterFound);
-
-            return ResponseEntity.ok(response);
-        }
-
-        response.setSuccess(false);
-        response.setMessage("Theater not found");
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        return ResponseEntity.ok(response);
 
     }
 
@@ -106,21 +91,14 @@ public class TheaterController {
     @DeleteMapping("{id}")
     public ResponseEntity<ResponseGen> deleteTheater(@PathVariable UUID id) {
         TheaterModel theater = theaterService.deleteTheater(id);
-        ResponseGen response = ResponseGen.builder().build();
+        ResponseGen response = ResponseGen.builder()
+        .success(true)
+        .message("Theater deleted successfully")
+        .data(theater)
+        .build();
 
-        if (theater != null) {
-            response.setSuccess(true);
-            response.setMessage("Theater delete successful");
-            response.setData(theater);
+        return ResponseEntity.ok(response);
 
-            return ResponseEntity.ok(response);
-        }
-
-        response.setSuccess(false);
-        response.setMessage("Theater not found");
-        response.setData(theater);
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
 }

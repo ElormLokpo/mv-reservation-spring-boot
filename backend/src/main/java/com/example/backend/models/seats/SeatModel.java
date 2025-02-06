@@ -25,14 +25,13 @@ public class SeatModel {
     @GeneratedValue
     @Id
     public UUID id;
-    public Integer srow;
-    public Integer scolumn;
+    public Integer slabel;
+   
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
     public SeatStatusEnum status = SeatStatusEnum.Available;
 
-    // Reservation rel
 
     // Theater rel
     @JsonIgnore

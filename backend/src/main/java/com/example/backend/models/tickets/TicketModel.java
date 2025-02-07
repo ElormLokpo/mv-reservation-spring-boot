@@ -34,5 +34,8 @@ public class TicketModel {
     @JoinColumn(name = "showtime_id")
     public ShowtimeModel showtime;
 
+    @Builder.Default
+    public Boolean isBought = false;
+    
     public UUID seat;
 }

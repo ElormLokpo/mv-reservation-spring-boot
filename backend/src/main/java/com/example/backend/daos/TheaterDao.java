@@ -17,4 +17,6 @@ public interface TheaterDao {
     public TheaterModel createTheater(UUID cinemaId, CreateTheaterDto theaterDto);
 
     public TheaterModel deleteTheater(UUID id);
+
+    
 }

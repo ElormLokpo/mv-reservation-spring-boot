@@ -1,15 +1,15 @@
 package com.example.backend.services;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import com.example.backend.daos.TicketDao;
 import com.example.backend.dtos.ResponseDto;
 import com.example.backend.dtos.ticket.GetTicketDto;
@@ -60,10 +60,29 @@ public class TicketService implements TicketDao {
     @Override
     public TicketModel deleteTicket(UUID id) {
         TicketModel ticket = ticketRepository.findById(id)
-        .orElseThrow(() -> new ResourceNotfoundException("Ticket with id:" + id + " not found"));
+                .orElseThrow(() -> new ResourceNotfoundException("Ticket with id:" + id + " not found"));
 
         ticketRepository.deleteById(id);
         return ticket;
     }
 
+    @Override
+    public Collection<TicketModel> buyTicket(Integer quantity) {
+        //Work on unique ticket numbers
+
+        List<TicketModel> ticketsNotBought = ticketRepository.findTicketsNotBought();
+        List<TicketModel> ticketsBought = new ArrayList<>();
+
+        for (int i = 1; i <= quantity; i++) {
+            TicketModel ticketFound = ticketRepository.findById(ticketsNotBought.get(i).getId())
+                    .orElseThrow(() -> new ResourceNotfoundException("Ticket with id not found"));
+
+            ticketFound.setIsBought(true);
+            ticketRepository.save(ticketFound);
+            ticketsBought.add(ticketFound);
+
+        }
+
+        return ticketsBought;
+    }
 }

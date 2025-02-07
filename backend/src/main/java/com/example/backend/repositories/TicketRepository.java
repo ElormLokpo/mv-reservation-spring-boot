@@ -1,5 +1,6 @@
 package com.example.backend.repositories;
 
+import java.util.List;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,4 +16,7 @@ public interface TicketRepository
 
         @Query("SELECT t from tickets t WHERE t.showtime.id = :showtimeId")
         public Page<TicketModel> findTicketsByShowtime(UUID showtimeId, Pageable pageable);
+
+        @Query("SELECT t from tickets t WHERE t.isBought = false")
+        public List<TicketModel> findTicketsNotBought();
 }

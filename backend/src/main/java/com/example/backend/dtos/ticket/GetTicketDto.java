@@ -12,5 +12,6 @@ public class GetTicketDto {
     public ShowtimeModel showtime;
 
     public UUID seat;
+    public Boolean isBought;
 
 }

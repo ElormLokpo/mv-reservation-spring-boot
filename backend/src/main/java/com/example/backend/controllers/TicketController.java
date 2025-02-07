@@ -9,18 +9,20 @@ import com.example.backend.services.TicketService;
 import com.example.backend.utils.ResponseGen;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.Collection;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.web.bind.annotation.PostMapping;
 
 @RequestMapping("/api/ticket")
 @RestController
 public class TicketController {
     TicketService ticketService;
 
-    public TicketController(TicketService _ticketService){
+    public TicketController(TicketService _ticketService) {
         this.ticketService = _ticketService;
     }
 
@@ -39,7 +41,7 @@ public class TicketController {
 
         return ResponseEntity.ok(response);
     }
-    
+
     @GetMapping("{id}")
     public ResponseEntity<ResponseGen> getTicket(@PathVariable UUID id) {
         TicketModel ticket = ticketService.getTicket(id);
@@ -53,6 +55,20 @@ public class TicketController {
 
     }
 
+    @PostMapping("buy")
+    public ResponseEntity<ResponseGen> buyTicket(
+            @RequestParam(value = "qty", defaultValue = "1", required = false) int quantity) {
+
+                Collection<TicketModel> ticketsBought = ticketService.buyTicket(quantity);
+
+                ResponseGen response = ResponseGen.builder()
+                .success(true)
+                .message("Tickets bought")
+                .data(ticketsBought)
+                .build();
+                
+                return ResponseEntity.ok(response);
+    }
 
     @DeleteMapping("{id}")
     public ResponseEntity<ResponseGen> deleteTicket(@PathVariable UUID id) {

@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@RequestMapping("auth")
+@RequestMapping("api/auth")
 @RestController
 public class UserController {
 
@@ -31,19 +31,15 @@ public class UserController {
 
         ResponseGen response = ResponseGen.builder().build();
 
-        if (userDto.getRole() != UserRolesEnum.CLERK) {
             AuthResponseDto authResponse = userService.registerUser(UserMapper.INSTANCE.userDtoToModel(userDto));
             response.setSuccess(true);
-            response.setMessage("User created sucessfully");
+            response.setMessage("User registered sucessfully.");
             response.setData(authResponse);
-        }
 
-        response.setSuccess(false);
-        response.setMessage("Only admins can create an account...Clerks are added by admins."); // handle exception
-                                                                                                // better.
-        response.setData(null);
+            return ResponseEntity.ok(response);
+        
 
-        return ResponseEntity.ok(response);
+       
     }
 
     @PostMapping("login")
@@ -52,7 +48,7 @@ public class UserController {
 
         ResponseGen response = ResponseGen.builder()
         .success(true)
-        .message("Login successful")
+        .message("Login successful.")
         .data(loggedInUser)
         .build();
 

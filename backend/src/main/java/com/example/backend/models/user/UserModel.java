@@ -29,5 +29,5 @@ public class UserModel {
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
-    public UserRolesEnum role = UserRolesEnum.ADMIN;
+    public UserRolesEnum role = UserRolesEnum.Admin;
 }

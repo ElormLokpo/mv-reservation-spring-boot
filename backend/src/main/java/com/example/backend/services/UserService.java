@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import com.example.backend.daos.UserDao;
 import com.example.backend.dtos.user.AuthResponseDto;
 import com.example.backend.dtos.user.LoginUserDto;
+import com.example.backend.mappers.UserMapper;
 import com.example.backend.models.user.UserModel;
+import com.example.backend.models.user.UserRolesEnum;
 import com.example.backend.repositories.UserRepository;
 
 import jakarta.security.auth.message.AuthException;
@@ -35,6 +37,12 @@ public class UserService implements UserDao {
     public AuthResponseDto registerUser(UserModel user) throws Exception {
         UserModel userFound = userRepository.findUserByUsername(user.getUsername());
 
+        if(user.getRole() == UserRolesEnum.Clerk){
+            throw new AuthException("Only admins can register accounts...Clerks are added by admins.");
+
+        }
+
+
         if (userFound != null) {
             throw new AuthException("User with username: " + user.getUsername() + " already exists.");
         }
@@ -42,7 +50,7 @@ public class UserService implements UserDao {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         UserModel createdUser = userRepository.save(user);
         return AuthResponseDto.builder()
-        .user(createdUser)
+        .user(UserMapper.INSTANCE.userToDto(createdUser))
         .token(jwtService.generateToken(createdUser.getUsername()))
         .build();
     }
@@ -62,7 +70,7 @@ public class UserService implements UserDao {
         }
 
         return AuthResponseDto.builder()
-        .user(userFound)
+        .user(UserMapper.INSTANCE.userToDto(userFound))
         .token(jwtService.generateToken(userFound.getUsername()))
         .build();
 

@@ -1,30 +1,78 @@
 package com.example.backend.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.backend.daos.UserDao;
+import com.example.backend.dtos.user.AuthResponseDto;
+import com.example.backend.dtos.user.LoginUserDto;
+import com.example.backend.mappers.UserMapper;
 import com.example.backend.models.user.UserModel;
+import com.example.backend.models.user.UserRolesEnum;
 import com.example.backend.repositories.UserRepository;
 
+import jakarta.security.auth.message.AuthException;
+
 @Service
-public class UserService {
+public class UserService implements UserDao {
 
     UserRepository userRepository;
     BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
+
+    @Autowired
+    AuthenticationManager authManager;
+
+    @Autowired
+    JwtService jwtService;
 
     public UserService(UserRepository _userRepository) {
         this.userRepository = _userRepository;
     }
 
-    //remember to implement user dao
-    public UserModel registerUser(UserModel user) {
+    // remember to implement user dao
+    public AuthResponseDto registerUser(UserModel user) throws Exception {
         UserModel userFound = userRepository.findUserByUsername(user.getUsername());
 
-        if (userFound == null) {
-            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-            return userRepository.save(user);
+        if(user.getRole() == UserRolesEnum.Clerk){
+            throw new AuthException("Only admins can register accounts...Clerks are added by admins.");
+
         }
 
-        return null;
+
+        if (userFound != null) {
+            throw new AuthException("User with username: " + user.getUsername() + " already exists.");
+        }
+
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        UserModel createdUser = userRepository.save(user);
+        return AuthResponseDto.builder()
+        .user(UserMapper.INSTANCE.userToDto(createdUser))
+        .token(jwtService.generateToken(createdUser.getUsername()))
+        .build();
+    }
+
+    public AuthResponseDto loginUser(LoginUserDto loginDto) throws Exception {
+        UserModel userFound = userRepository.findUserByUsername(loginDto.getUsername());
+
+        if (userFound == null) {
+            throw new AuthException("User with username: " + loginDto.getUsername() + " does NOT exist.");
+        }
+
+        Authentication authentication = authManager
+                .authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword()));
+
+        if (!authentication.isAuthenticated()) {
+            throw new AuthException("Incorrect password");
+        }
+
+        return AuthResponseDto.builder()
+        .user(UserMapper.INSTANCE.userToDto(userFound))
+        .token(jwtService.generateToken(userFound.getUsername()))
+        .build();
+
     }
 }

@@ -48,7 +48,7 @@ public class UserController {
 
         ResponseGen response = ResponseGen.builder()
         .success(true)
-        .message("Login successful.")
+        .message("Login successful..")
         .data(loggedInUser)
         .build();
 

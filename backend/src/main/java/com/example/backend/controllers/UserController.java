@@ -7,8 +7,6 @@ import com.example.backend.dtos.user.AuthResponseDto;
 import com.example.backend.dtos.user.CreateUserDto;
 import com.example.backend.dtos.user.LoginUserDto;
 import com.example.backend.mappers.UserMapper;
-import com.example.backend.models.user.UserModel;
-import com.example.backend.models.user.UserRolesEnum;
 import com.example.backend.services.UserService;
 import com.example.backend.utils.ResponseGen;
 

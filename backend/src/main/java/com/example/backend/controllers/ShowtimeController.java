@@ -14,12 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.UUID;
 import com.example.backend.dtos.showtime.CreateShowtimeDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RequestMapping("/api/showtime")
 @RestController
+@PreAuthorize("hasRole('ADMIN') or hasRole('CLERK')")
 public class ShowtimeController {
     ShowtimeService showtimeService;
 

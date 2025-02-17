@@ -1,7 +1,6 @@
 package com.example.backend.dtos.user;
 
 import java.util.UUID;
-
 import lombok.Builder;
 import lombok.Data;
 

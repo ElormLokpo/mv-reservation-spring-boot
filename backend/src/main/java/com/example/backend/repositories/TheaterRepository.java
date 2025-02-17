@@ -1,8 +1,6 @@
 package com.example.backend.repositories;
 
-import java.util.Collection;
 import java.util.UUID;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

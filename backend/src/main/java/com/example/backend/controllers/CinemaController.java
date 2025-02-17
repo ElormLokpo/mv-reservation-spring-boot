@@ -3,31 +3,25 @@ package com.example.backend.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.example.backend.dtos.ResponseDto;
 import com.example.backend.dtos.cinema.CreateCinemaDto;
-import com.example.backend.dtos.cinema.GetCinemaDto;
 import com.example.backend.mappers.ResponseMapper;
 import com.example.backend.models.cinema.CinemaModel;
 import com.example.backend.services.CinemaService;
 import com.example.backend.utils.ResponseGen;
-
 import jakarta.validation.Valid;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import java.util.Optional;
 import java.util.UUID;
-
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
 @RequestMapping("/api/cinema")
 @RestController
+@PreAuthorize("hasRole('ADMIN')")
 public class CinemaController {
 
         CinemaService cinemaService;
@@ -37,6 +31,7 @@ public class CinemaController {
         }
 
         @GetMapping
+        @PreAuthorize("hasRole('ADMIN') or hasAuthority('clerk:read')")
         public ResponseEntity<ResponseGen> getAllCinema(
                         @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
                         @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
@@ -54,6 +49,7 @@ public class CinemaController {
         }
 
         @GetMapping(path = "{id}")
+        @PreAuthorize("hasRole('ADMIN') or hasAuthority('clerk:read')")
         public ResponseEntity<ResponseGen> getCinema(@PathVariable UUID id) {
                 CinemaModel cinema = cinemaService.getCinema(id);
 

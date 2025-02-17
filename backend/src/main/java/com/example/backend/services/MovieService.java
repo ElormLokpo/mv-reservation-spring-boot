@@ -1,16 +1,13 @@
 package com.example.backend.services;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import com.example.backend.daos.MovieDao;
 import com.example.backend.dtos.ResponseDto;
 import com.example.backend.dtos.movie.CreateMovieDto;

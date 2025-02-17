@@ -2,7 +2,6 @@ package com.example.backend.mappers;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
-
 import com.example.backend.dtos.ResponseDto;
 import com.example.backend.utils.ResponseGen;
 

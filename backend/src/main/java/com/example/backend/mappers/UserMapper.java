@@ -2,7 +2,6 @@ package com.example.backend.mappers;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
-
 import com.example.backend.dtos.user.CreateUserDto;
 import com.example.backend.dtos.user.UserResponseDto;
 import com.example.backend.models.user.UserModel;

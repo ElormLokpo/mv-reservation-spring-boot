@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RequestMapping("/api/theater")
 @RestController
+@PreAuthorize("hasRole('ADMIN')")
 public class TheaterController {
 
     TheaterService theaterService;
@@ -29,6 +31,7 @@ public class TheaterController {
     }
 
     @GetMapping("cinema")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('clerk:read')")
     public ResponseEntity<ResponseGen> getAllTheatersByCinema(
             @RequestParam(value = "cinemaId", required = true) UUID cinemaId,
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
@@ -45,6 +48,7 @@ public class TheaterController {
     }
 
     @GetMapping("all")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('clerk:read')")
     public ResponseEntity<ResponseGen> getAllTheaters(
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
@@ -60,6 +64,7 @@ public class TheaterController {
     }
 
     @GetMapping("{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('clerk:read')")
     public ResponseEntity<ResponseGen> getTheater(@PathVariable UUID id) {
         TheaterModel theater = theaterService.getTheater(id);
 

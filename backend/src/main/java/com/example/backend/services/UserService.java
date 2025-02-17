@@ -6,15 +6,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import com.example.backend.daos.UserDao;
 import com.example.backend.dtos.user.AuthResponseDto;
+import com.example.backend.dtos.user.ClerkResponseDto;
 import com.example.backend.dtos.user.LoginUserDto;
 import com.example.backend.mappers.UserMapper;
 import com.example.backend.models.user.UserModel;
 import com.example.backend.models.user.UserRolesEnum;
 import com.example.backend.repositories.UserRepository;
-
 import jakarta.security.auth.message.AuthException;
 
 @Service
@@ -33,15 +32,21 @@ public class UserService implements UserDao {
         this.userRepository = _userRepository;
     }
 
-    // remember to implement user dao
-    public AuthResponseDto registerUser(UserModel user) throws Exception {
+  
+    public Object registerUser(UserModel user) throws Exception {
         UserModel userFound = userRepository.findUserByUsername(user.getUsername());
 
-        if(user.getRole() == UserRolesEnum.Clerk){
-            throw new AuthException("Only admins can register accounts...Clerks are added by admins.");
+        if(user.getRole() == UserRolesEnum.CLERK){
+            if (userFound != null) {
+                throw new AuthException("User with username: " + user.getUsername() + " already exists.");
+            }
 
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            UserModel createdUser = userRepository.save(user);
+            return ClerkResponseDto.builder()
+            .user(UserMapper.INSTANCE.userToDto(createdUser))
+            .build();
         }
-
 
         if (userFound != null) {
             throw new AuthException("User with username: " + user.getUsername() + " already exists.");
@@ -54,6 +59,8 @@ public class UserService implements UserDao {
         .token(jwtService.generateToken(createdUser.getUsername()))
         .build();
     }
+
+
 
     public AuthResponseDto loginUser(LoginUserDto loginDto) throws Exception {
         UserModel userFound = userRepository.findUserByUsername(loginDto.getUsername());

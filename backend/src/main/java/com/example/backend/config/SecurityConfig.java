@@ -30,7 +30,13 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("api/auth/register", "api/auth/login").permitAll()
+                        .requestMatchers(
+                            "/",
+                            "api/auth/register", 
+                            "api/auth/login",
+                            "/swagger-ui/**", 
+                            "/v3/api-docs/**"
+                        ).permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -1,7 +1,6 @@
 package com.example.backend.models.user;
 
 import java.util.UUID;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -29,5 +28,5 @@ public class UserModel {
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
-    public UserRolesEnum role = UserRolesEnum.Admin;
+    public UserRolesEnum role = UserRolesEnum.ADMIN;
 }

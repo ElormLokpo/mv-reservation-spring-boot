@@ -1,7 +1,5 @@
 package com.example.backend.dtos.user;
 
-
-
 import lombok.Builder;
 import lombok.Data;
 

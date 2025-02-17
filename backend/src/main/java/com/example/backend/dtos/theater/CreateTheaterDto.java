@@ -1,9 +1,5 @@
 package com.example.backend.dtos.theater;
 
-import java.util.UUID;
-
-import com.example.backend.models.cinema.CinemaModel;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

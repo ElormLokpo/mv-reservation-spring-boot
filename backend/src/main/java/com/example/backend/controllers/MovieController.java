@@ -1,20 +1,15 @@
 package com.example.backend.controllers;
 
-import java.util.Collection;
-import java.util.Optional;
 import java.util.UUID;
-
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.example.backend.dtos.ResponseDto;
 import com.example.backend.dtos.movie.CreateMovieDto;
-import com.example.backend.dtos.movie.GetMoviesDto;
 import com.example.backend.mappers.ResponseMapper;
 import com.example.backend.models.movie.MovieModel;
 import com.example.backend.services.MovieService;
 import com.example.backend.utils.ResponseGen;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,11 +18,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.DeleteMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/api/movies")
+@PreAuthorize("hasRole('ADMIN') or hasRole('CLERK')")
 public class MovieController {
 
     MovieService movieService;

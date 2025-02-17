@@ -7,16 +7,17 @@ import com.example.backend.mappers.ResponseMapper;
 import com.example.backend.models.seats.SeatModel;
 import com.example.backend.services.SeatService;
 import com.example.backend.utils.ResponseGen;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RequestMapping("/api/seat")
 @RestController
+@PreAuthorize("hasRole('ADMIN')")
 public class SeatController {
 
     SeatService seatService;
@@ -26,6 +27,7 @@ public class SeatController {
     }
 
     @GetMapping("theater")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('clerk:read')")
     public ResponseEntity<ResponseGen> getAllSeatsByTheater(
             @RequestParam(value = "theaterId", required = true) UUID theaterId,
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
@@ -44,6 +46,7 @@ public class SeatController {
     }
 
     @GetMapping("{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasAuthority('clerk:read')")
     public ResponseEntity<ResponseGen> getSeat(@PathVariable UUID id) {
         SeatModel seat = seatService.getSeat(id);
 

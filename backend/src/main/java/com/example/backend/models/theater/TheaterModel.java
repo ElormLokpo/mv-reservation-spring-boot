@@ -1,15 +1,11 @@
 package com.example.backend.models.theater;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import com.example.backend.models.cinema.CinemaModel;
 import com.example.backend.models.seats.SeatModel;
-import com.example.backend.models.showtime.ShowtimeModel;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

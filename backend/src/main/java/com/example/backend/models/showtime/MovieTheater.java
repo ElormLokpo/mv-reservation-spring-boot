@@ -1,7 +1,6 @@
 package com.example.backend.models.showtime;
 
 import java.util.UUID;
-
 import lombok.Data;
 
 @Data

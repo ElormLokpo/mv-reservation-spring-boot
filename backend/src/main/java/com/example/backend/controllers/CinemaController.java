@@ -64,6 +64,7 @@ public class CinemaController {
         }
 
         @PostMapping
+        @PreAuthorize("hasRole('ADMIN')")
         public ResponseEntity<ResponseGen> createCinema(@Valid @RequestBody CreateCinemaDto cinemaDto) {
                 CinemaModel createdCinema = cinemaService.createCinema(cinemaDto);
 
@@ -77,6 +78,7 @@ public class CinemaController {
         }
 
         @DeleteMapping(path = "{id}")
+        @PreAuthorize("hasRole('ADMIN')")
         public ResponseEntity<ResponseGen> deleteCinema(@PathVariable UUID id) {
                 CinemaModel cinema = cinemaService.deleteCinema(id);
                 ResponseGen response = ResponseGen.builder()

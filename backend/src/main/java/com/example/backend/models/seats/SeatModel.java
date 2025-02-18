@@ -26,11 +26,9 @@ public class SeatModel {
     public UUID id;
     public Integer slabel;
    
-
     @Builder.Default
     @Enumerated(EnumType.STRING)
     public SeatStatusEnum status = SeatStatusEnum.Available;
-
 
     // Theater rel
     @JsonIgnore
